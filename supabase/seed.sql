@@ -1,0 +1,3 @@
+-- Monc seed file
+-- No seed data needed for task management app
+-- Users create their own data after signing up
