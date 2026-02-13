@@ -106,9 +106,9 @@ function TimeSlot({
     >
       <button
         onClick={() => onAddAtTime(hour, minute)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 transition-opacity hover:bg-primary/20 group-hover/slot:opacity-100"
+        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 transition-opacity hover:bg-primary/20 active:bg-primary/20 group-hover/slot:opacity-100 sm:h-5 sm:w-5"
       >
-        <Plus className="h-3 w-3" />
+        <Plus className="h-3.5 w-3.5 sm:h-3 sm:w-3" />
       </button>
     </div>
   )
@@ -287,17 +287,24 @@ export function Timeline({
     <div ref={containerRef} className="relative flex-1 overflow-y-auto overflow-x-hidden">
       <div className="flex" style={{ minHeight: totalHeight }}>
         {/* Left gutter: hour labels */}
-        <div className="relative w-16 shrink-0" style={{ height: totalHeight }}>
+        <div className="relative w-14 shrink-0 sm:w-16" style={{ height: totalHeight }}>
           {hours.map((h) => {
             const top = (h - startHour) * HOUR_HEIGHT
+            const ampm = h >= 12 ? "PM" : "AM"
+            const displayH = h % 12 || 12
+            const fullLabel = `${displayH}:00 ${ampm}`
+            const shortLabel = `${displayH}${ampm[0].toLowerCase()}`
             return (
               <div
                 key={h}
                 className="absolute right-2 whitespace-nowrap"
                 style={{ top: top - 8 }}
               >
-                <span className="text-[11px] font-medium text-muted-foreground">
-                  {formatTimeDisplay(`${h.toString().padStart(2, "0")}:00:00`)}
+                <span className="hidden text-[11px] font-medium text-muted-foreground sm:inline">
+                  {fullLabel}
+                </span>
+                <span className="text-[11px] font-medium text-muted-foreground sm:hidden">
+                  {shortLabel}
                 </span>
               </div>
             )

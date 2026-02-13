@@ -21,6 +21,7 @@ import {
   getTaskScheduleDates,
   materializeRecurringTasks,
   updateFutureSchedules,
+  updateFutureScheduleTimeSlot,
   createTask,
   updateTask,
   deleteTask,
@@ -289,6 +290,16 @@ export default function AppPage() {
           end_time: minutesToTime(endMins),
         })
       }
+
+      if (task.is_recurring) {
+        await updateFutureScheduleTimeSlot(
+          task.id,
+          minutesToTime(startMins),
+          minutesToTime(endMins),
+          dateStr
+        )
+      }
+
       await loadData()
       toast.success(`Scheduled at ${slotTime}`)
     } catch {

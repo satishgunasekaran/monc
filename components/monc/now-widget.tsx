@@ -33,15 +33,15 @@ export function NowWidget({ scheduledTasks }: NowWidgetProps) {
   if (currentTasks.length === 0 && !nextTask) return null
 
   return (
-    <div className="flex items-center gap-3 border-b bg-card/50 px-4 py-2">
+    <div className="flex flex-wrap items-center gap-2 border-b bg-card/50 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
       {currentTasks.length > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
-          <span className="text-xs font-medium">Now:</span>
+          <span className="text-[11px] font-medium sm:text-xs">Now:</span>
           {currentTasks.map((ct) => (
-            <Badge key={ct.id} variant="secondary" className="text-xs">
+            <Badge key={ct.id} variant="secondary" className="max-w-[140px] truncate text-[11px] sm:max-w-none sm:text-xs">
               {ct.task.title}
-              <span className="ml-1 text-muted-foreground">
+              <span className="ml-1 hidden text-muted-foreground sm:inline">
                 until {formatTimeDisplay(ct.end_time)}
               </span>
             </Badge>
@@ -50,11 +50,11 @@ export function NowWidget({ scheduledTasks }: NowWidgetProps) {
       )}
 
       {nextTask && (
-        <div className="flex items-center gap-2 text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-muted-foreground sm:gap-2">
           {currentTasks.length > 0 && <ArrowRight className="h-3 w-3" />}
           <Clock className="h-3 w-3" />
-          <span className="text-xs">
-            Next: <span className="font-medium text-foreground">{nextTask.task.title}</span>{" "}
+          <span className="text-[11px] sm:text-xs">
+            Next: <span className="max-w-[100px] truncate font-medium text-foreground sm:max-w-none">{nextTask.task.title}</span>{" "}
             at {formatTimeDisplay(nextTask.start_time)}
           </span>
         </div>

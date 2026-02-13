@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { ChevronLeft, ChevronRight, CalendarDays, Plus } from "lucide-react"
 import { format, addDays, subDays, isToday, isTomorrow, isYesterday } from "date-fns"
 
@@ -27,9 +28,12 @@ export function DayHeader({
   completedCount,
 }: DayHeaderProps) {
   return (
-    <div className="flex items-center justify-between border-b px-4 py-2.5">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1">
+    <div className="flex items-center justify-between border-b px-2 py-2 sm:px-4 sm:py-2.5">
+      <div className="flex items-center gap-1 sm:gap-3">
+        {/* Mobile sidebar trigger */}
+        <SidebarTrigger className="h-7 w-7 md:hidden" />
+
+        <div className="flex items-center gap-0.5 sm:gap-1">
           <Button
             variant="ghost"
             size="icon"
@@ -41,7 +45,7 @@ export function DayHeader({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 gap-1.5 px-2 text-sm font-medium"
+            className="h-7 gap-1 px-1.5 text-sm font-medium sm:gap-1.5 sm:px-2"
             onClick={() => onDateChange(new Date())}
           >
             <CalendarDays className="h-3.5 w-3.5" />
@@ -56,19 +60,32 @@ export function DayHeader({
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-        <span className="text-xs text-muted-foreground">
+
+        {/* Date + progress: hidden on very small screens */}
+        <span className="hidden text-xs text-muted-foreground sm:inline">
           {format(date, "MMM d, yyyy")}
         </span>
         {scheduledCount > 0 && (
-          <span className="text-xs text-muted-foreground">
+          <span className="hidden text-xs text-muted-foreground sm:inline">
             {completedCount}/{scheduledCount} done
+          </span>
+        )}
+
+        {/* Compact progress badge on mobile */}
+        {scheduledCount > 0 && (
+          <span className="text-[10px] text-muted-foreground sm:hidden">
+            {completedCount}/{scheduledCount}
           </span>
         )}
       </div>
 
-      <Button size="sm" className="h-7 gap-1.5 px-2.5 text-xs" onClick={onAddTask}>
+      <Button
+        size="sm"
+        className="h-7 gap-1 px-2 text-xs sm:gap-1.5 sm:px-2.5"
+        onClick={onAddTask}
+      >
         <Plus className="h-3.5 w-3.5" />
-        Add Task
+        <span className="hidden sm:inline">Add Task</span>
       </Button>
     </div>
   )

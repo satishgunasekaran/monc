@@ -226,6 +226,43 @@ export async function updateFutureSchedules(
   }
 }
 
+/**
+ * Update future (non-completed) schedule entries for a recurring task to a new time slot.
+ */
+export async function updateFutureScheduleTimeSlot(
+  taskId: string,
+  newStartTime: string,
+  newEndTime: string,
+  currentDate: string
+): Promise<void> {
+  const supabase = getSupabase()
+
+  // Materialize upcoming days first so the update applies consistently.
+  const baseDate = new Date(currentDate + "T00:00:00")
+  for (let i = 1; i <= 14; i++) {
+    const d = new Date(baseDate)
+    d.setDate(d.getDate() + i)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    await materializeRecurringTasks(`${y}-${m}-${day}`)
+  }
+
+  const { error } = await supabase
+    .from("task_schedules")
+    .update({
+      start_time: newStartTime,
+      end_time: newEndTime,
+    })
+    .eq("task_id", taskId)
+    .eq("is_completed", false)
+    .gt("date", currentDate)
+
+  if (error) {
+    console.error("Failed to update future schedule time slots:", error)
+  }
+}
+
 // ─── Recurring Task Materialization ────────────────────────
 
 /** Check if a recurring task should appear on a given date */
