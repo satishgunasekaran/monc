@@ -42,6 +42,7 @@ export default function AppPage() {
   const [taskDialogData, setTaskDialogData] = useState<TaskDialogData | undefined>()
   const [draggedItem, setDraggedItem] = useState<{ task: Task; schedule?: ScheduledTask } | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const [isSyncing, setIsSyncing] = useState(false)
 
   const dateStr = format(selectedDate, "yyyy-MM-dd")
 
@@ -63,10 +64,14 @@ export default function AppPage() {
   }, [])
 
   // Load data
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (options?: { materialize?: boolean }) => {
     try {
-      // Materialize recurring tasks first, then fetch everything
-      await materializeRecurringTasks(dateStr)
+      setIsSyncing(true)
+
+      if (options?.materialize) {
+        // Only materialize on date navigation (expensive path)
+        await materializeRecurringTasks(dateStr)
+      }
 
       const [taskData, scheduleData, scheduleDates] = await Promise.all([
         getInboxTasks(),
@@ -80,11 +85,13 @@ export default function AppPage() {
     } catch (err) {
       console.error("Failed to load data:", err)
       toast.error("Failed to load tasks")
+    } finally {
+      setIsSyncing(false)
     }
   }, [dateStr])
 
   useEffect(() => {
-    loadData()
+    loadData({ materialize: true })
   }, [loadData])
 
   // ─── Dialog openers ────────────────────────────────────
@@ -311,6 +318,11 @@ export default function AppPage() {
 
           {/* Main Timeline */}
           <div className="flex flex-1 flex-col overflow-hidden">
+            {isSyncing && (
+              <div className="relative h-0.5 w-full overflow-hidden bg-border/30">
+                <div className="absolute inset-y-0 w-1/3 animate-[slide_1s_ease-in-out_infinite] bg-primary" />
+              </div>
+            )}
             <DayHeader
               date={selectedDate}
               onDateChange={setSelectedDate}

@@ -355,7 +355,7 @@ export function Timeline({
                     onDeleteSchedule={onDeleteSchedule}
                     onEdit={onEdit}
                     onResizeStart={handleResizeStart}
-                    compact={height < 44}
+                    compact={height < 32}
                     showResize
                   />
                 </div>

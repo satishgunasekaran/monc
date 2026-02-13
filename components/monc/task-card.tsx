@@ -103,25 +103,27 @@ export function TaskCard({
           {task.title}
         </p>
 
-        {!compact && (
+        {(isScheduled && schedule) || !compact ? (
           <div className="mt-0.5 flex flex-wrap items-center gap-1">
             {isScheduled && schedule && (
               <span className="text-[10px] text-muted-foreground">
                 {formatTimeDisplay(schedule.start_time)} - {formatTimeDisplay(schedule.end_time)}
               </span>
             )}
-            <Badge
-              variant="outline"
-              className="h-3.5 px-1 text-[9px]"
-              style={{ color: priorityConfig.color, borderColor: priorityConfig.color + "40" }}
-            >
-              {priorityConfig.label}
-            </Badge>
-            {task.is_recurring && (
+            {!compact && (
+              <Badge
+                variant="outline"
+                className="h-3.5 px-1 text-[9px]"
+                style={{ color: priorityConfig.color, borderColor: priorityConfig.color + "40" }}
+              >
+                {priorityConfig.label}
+              </Badge>
+            )}
+            {!compact && task.is_recurring && (
               <Repeat className="h-2.5 w-2.5 text-muted-foreground" />
             )}
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Actions */}
